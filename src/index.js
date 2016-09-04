@@ -1,27 +1,32 @@
 'use strict';
-var path = require('path');
-var express = require('express');
-var jsonApi = require('json-api');
-var jsonApiError = jsonApi.types.Error;
-var mongoose = require('mongoose');
+const path = require('path');
+const express = require('express');
+const jsonApi = require('json-api');
+const jsonApiError = jsonApi.types.Error;
+const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/ember-sensei-cards');
 
 
-var models = {
-  card: require('./models/sensei-cards/card'),
+const models = {
+  // Sensei Cards
+  Card: require('./models/sensei-cards/card'),
+  //FeatureCard: require('./models/sensei-cards/feature-card'),
+  //TrainingCard: require('./models/sensei-cards/training-card')
+
+  // Movies
 }
 
-var adapter = new jsonApi.dbAdapters.Mongoose(models);
-var registry = new jsonApi.ResourceTypeRegistry({
-  // TODO: implement resources-descriptions
+const adapter = new jsonApi.dbAdapters.Mongoose(models);
+const registry = new jsonApi.ResourceTypeRegistry({
+  cards: require('./resource-descriptions/sensei-cards/cards')
 }, { dbAdapter: adapter });
 
-var controller = new jsonApi.controllers.API(registry);
-var docs = new jsonApi.controllers.Documentation(registry, {name: 'Ember Sensei Stories API'});
-var app = express();
-var front = new jsonApi.httpStrategies.Express(controller, docs);
-var apiReqHandler = front.apiRequest.bind(front);
+const controller = new jsonApi.controllers.API(registry);
+const docs = new jsonApi.controllers.Documentation(registry, {name: 'Ember Sensei Stories API'});
+const app = express();
+const front = new jsonApi.httpStrategies.Express(controller, docs);
+const apiReqHandler = front.apiRequest.bind(front);
 
 // Enable CORS. Note: if you copy this code into production, you may want to
 // disable this. See https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
@@ -32,7 +37,12 @@ app.use(function(req, res, next) {
 
 //routes
 app.get("/", front.docsRequest.bind(front));
-//TODO: Routes
+app.route("/sensei-cards/:type(cards)")
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
+app.route("/sensei-cards/:type(cards)/:id")
+  .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
+app.route("/sensei-cards/:type(cards)/:id/relationships/:relationship")
+  .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 
 app.use(function(req, res, next) {
   front.sendError(new jsonApiError(404, undefined, 'Not Found'), req, res);

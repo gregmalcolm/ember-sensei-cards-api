@@ -1,21 +1,17 @@
 'use strict';
-var mongoose = require('mongoose');
-
-module.exports = mongoose.model('Card', {
-  type: { type: String, enum: ['Feature', 'Training'], },
+const mongoose = require('mongoose');
+const schema = new mongoose.Schema({
   title: String,
   status: {
     type: String,
     enum: ['Not Started', 'In Progress', 'Done', 'Skipped'],
     default: 'Not Started'
   },
-  storyPoints: Number,
+  storyPoints: { type: Number, default: 1 },
   task: String,
   acceptanceCriteria: String,
-  furtherReading: String,
-  prerequisites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Card'}],
-  preparation: String,
-  guidance: String,
-  hints: [String],
+
   updatedAt: Date
 });
+
+module.exports = mongoose.model('Card', schema);

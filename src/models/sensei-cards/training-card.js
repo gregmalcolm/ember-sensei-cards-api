@@ -1,2 +1,9 @@
 'use strict';
-var card = require('./card');
+const mongoose = require('mongoose');
+const Card = require('./card');
+const schema = new mongoose.Schema({
+  furtherReading: String
+});
+
+module.exports = Card.discriminator('TrainingCard', schema);
+
