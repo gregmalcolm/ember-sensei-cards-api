@@ -9,7 +9,7 @@ mongoose.connect('mongodb://localhost/ember-sensei-cards');
 
 
 var models = {
-  // TODO: implement models
+  card: require('./models/sensei-cards/card'),
 }
 
 var adapter = new jsonApi.dbAdapters.Mongoose(models);
@@ -38,5 +38,5 @@ app.use(function(req, res, next) {
   front.sendError(new jsonApiError(404, undefined, 'Not Found'), req, res);
 });
 
-console.log("Starting an ember-sensei-cards backend server on localhost:5000");
+console.log("Starting an ember-sensei-cards API server on http://localhost:5000");
 app.listen(5000);
