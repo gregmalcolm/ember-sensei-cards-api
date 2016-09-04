@@ -1,13 +1,14 @@
 {
-  "name": "ember-sensei-cards-backend",
+  "name": "ember-sensei-cards-api",
   "version": "1.0.0",
   "private": true,
-  "description": "Database backend for Ember Sensei Cards for cards and movies",
+  "description": "Database backend API for Ember Sensei Cards for cards and movies",
   "main": "index.js",
   "engines": {
     "node": ">=4.0.0"
   },
   "scripts": {
+    "start": "node src/index.js",
     "test": "mocha $(find test -name \"*.js\")"
   },
   "keywords": [
