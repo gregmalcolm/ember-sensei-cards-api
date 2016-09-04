@@ -1,9 +1,10 @@
 'use strict';
 const mongoose = require('mongoose');
-const Card = require('./card');
-const schema = new mongoose.Schema({
-  furtherReading: String
-});
 
-module.exports = Card.discriminator('TrainingCard', schema);
+module.exports = function(Card, CardSchema) {
+  var schema = new CardSchema({
+    furtherReading: String
+  });
 
+  return Card.discriminator('TrainingCard', schema);
+};

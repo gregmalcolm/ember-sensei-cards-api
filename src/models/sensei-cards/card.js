@@ -1,17 +1,27 @@
 'use strict';
 const mongoose = require('mongoose');
-const schema = new mongoose.Schema({
-  title: String,
-  status: {
-    type: String,
-    enum: ['Not Started', 'In Progress', 'Done', 'Skipped'],
-    default: 'Not Started'
-  },
-  storyPoints: { type: Number, default: 1 },
-  task: String,
-  acceptanceCriteria: String,
+const utils = require('../../lib/utils');
 
-  updatedAt: Date
-});
+const CardSchema = function CardSchema() {
+  mongoose.Schema.apply(this, arguments);
+  this.add({
+    title: String,
+    //status: {
+      //type: String,
+      //enum: ['Not Started', 'In Progress', 'Done', 'Skipped'],
+      //default: 'Not Started'
+    //},
+    //storyPoints: { type: Number, default: 1 },
+    //task: String,
+    //acceptanceCriteria: String,
 
-module.exports = mongoose.model('Card', schema);
+    //updatedAt: Date
+  });
+};
+utils.inherit(CardSchema, mongoose.Schema);
+const schema = new CardSchema();
+
+module.exports = {
+  model: mongoose.model('Card', schema),
+  schema: CardSchema
+};

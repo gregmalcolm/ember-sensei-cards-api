@@ -7,19 +7,24 @@ const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/ember-sensei-cards');
 
+const CardModelSchema = require('./models/sensei-cards/card');
+const CardModel       = CardModelSchema.model;
+const CardSchema      = CardModelSchema.schema;
 
 const models = {
   // Sensei Cards
-  Card: require('./models/sensei-cards/card'),
-  //FeatureCard: require('./models/sensei-cards/feature-card'),
-  //TrainingCard: require('./models/sensei-cards/training-card')
+  Card: CardModel,
+  FeatureCard: require('./models/sensei-cards/feature-card')(CardModel, CardSchema),
+  TrainingCard: require('./models/sensei-cards/training-card')(CardModel, CardSchema),
 
   // Movies
 }
 
 const adapter = new jsonApi.dbAdapters.Mongoose(models);
 const registry = new jsonApi.ResourceTypeRegistry({
-  cards: require('./resource-descriptions/sensei-cards/cards')
+  "cards": require('./resource-descriptions/sensei-cards/cards'),
+  "feature-cards": require('./resource-descriptions/sensei-cards/feature-cards'),
+  "training-cards": require('./resource-descriptions/sensei-cards/training-cards')
 }, { dbAdapter: adapter });
 
 const controller = new jsonApi.controllers.API(registry);
@@ -37,11 +42,11 @@ app.use(function(req, res, next) {
 
 //routes
 app.get("/", front.docsRequest.bind(front));
-app.route("/sensei-cards/:type(cards)")
+app.route("/sensei-cards/:type(cards|feature-cards|training-cards)")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler);
-app.route("/sensei-cards/:type(cards)/:id")
+app.route("/sensei-cards/:type(cards|feature-cards|training-cards)/:id")
   .get(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
-app.route("/sensei-cards/:type(cards)/:id/relationships/:relationship")
+app.route("/sensei-cards/:type(cards|features-cards|training-cards)/:id/relationships/:relationship")
   .get(apiReqHandler).post(apiReqHandler).patch(apiReqHandler).delete(apiReqHandler);
 
 app.use(function(req, res, next) {
